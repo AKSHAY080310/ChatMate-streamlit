@@ -1,26 +1,23 @@
 import streamlit as st
 import requests
 
-# Load the secret Hugging Face API token
-HF_API_TOKEN = st.secrets["HF_API_TOKEN"]
-ASSISTANT_ID = "68543ce16237dcbb171ec9cd"  # Replace with your actual Assistant ID
-
-def query_huggingface(message):
-    url = f"https://api.huggingface.co/chat/conversations"
-    headers = {
-        "Authorization": f"Bearer {HF_API_TOKEN}",
-        "Content-Type": "application/json"
-    }
-    payload = {
-        "assistant_id": ASSISTANT_ID,
-        "inputs": {"text": message}
-    }
-    response = requests.post(url, json=payload, headers=headers)
-    return response.json()["generated_text"]
-
+# Title
 st.title("🤖 Hugging Face Chat Assistant")
-user_input = st.text_input("You: ", "")
 
+# Input box
+user_input = st.text_input("You:", "")
+
+# If user enters a message
 if user_input:
-    reply = query_huggingface(user_input)
-    st.write(f"Assistant: {reply}")
+    with st.spinner("Talking to assistant..."):
+        API_URL = "https://api-inference.huggingface.co/models/microsoft/DialoGPT-medium"
+        headers = {"Authorization": f"Bearer {st.secrets['hf_token']}"}
+        payload = {"inputs": {"text": user_input}}
+
+        response = requests.post(API_URL, headers=headers, json=payload)
+
+        if response.status_code == 200:
+            generated_text = response.json()[0]["generated_text"]
+            st.write("Assistant:", generated_text)
+        else:
+            st.error("Something went wrong. Try again later.")
