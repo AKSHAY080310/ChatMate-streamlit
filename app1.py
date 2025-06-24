@@ -10,7 +10,7 @@ user_input = st.text_input("You:", "")
 # API setup
 API_URL = "https://api-inference.huggingface.co/models/mistralai/Mixtral-8x7B-Instruct-v0.1"
 headers = {
-    "Authorization": f"Bearer {st.secrets['HUGGINGFACE_TOKEN']}",  # Use the exact key from secrets.toml
+    "Authorization": f"Bearer {st.secrets['hf_token']}",  # Use the exact key from secrets.toml
     "Content-Type": "application/json"
 }
 
